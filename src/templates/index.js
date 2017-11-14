@@ -43,18 +43,28 @@ class IndexPage extends Component {
     );
   }
 
+  jumbotron() {
+    return (
+      <Jumbotron style={{
+        height: '400px',
+        backgroundColor: '#555',
+        color: 'white'
+      }}>
+        <Col md={8} mdOffset={2} lg={6} lgOffset={3}>
+          <h1>Blog</h1>
+        </Col>
+        <Clearfix />
+      </Jumbotron>
+    )
+  }
+
   render() {
     const { data, pathContext } = this.props;
     const { group, nextPath, prevPath } = pathContext;
 
     return (
       <main>
-        <Jumbotron>
-          <Col md={8} mdOffset={2} lg={6} lgOffset={3}>
-            <h1>Blog</h1>
-          </Col>
-          <Clearfix />
-        </Jumbotron>
+        {this.jumbotron()}
         <Grid fluid>
           <Row className="show-grid">
             <Col md={8} mdOffset={2} lg={6} lgOffset={3}>
@@ -71,16 +81,12 @@ class IndexPage extends Component {
           <Row className="show-grid">
             <Col md={8} mdOffset={2} lg={6} lgOffset={3}>
               <Pager>
-                {prevPath && (
-                  <Pager.Item previous href={prevPath}>
-                    &larr; Older posts
-                  </Pager.Item>
-                )}
-                {nextPath && (
-                  <Pager.Item next href={nextPath}>
-                    Newer posts &rarr;
-                  </Pager.Item>
-                )}
+                <Pager.Item disabled={!prevPath} previous href={prevPath}>
+                  &larr; Older posts
+                </Pager.Item>
+                <Pager.Item disabled={!nextPath} next href={nextPath}>
+                  Newer posts &rarr;
+                </Pager.Item>
               </Pager>
             </Col>
           </Row>

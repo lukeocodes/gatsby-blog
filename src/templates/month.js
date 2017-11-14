@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import IndexPage from '../templates/index.js';
-import { Breadcrumb } from 'react-bootstrap';
+import { Col, Clearfix, Jumbotron, Breadcrumb } from 'react-bootstrap';
 import moment from 'moment';
 
 class MonthPage extends IndexPage {
@@ -17,6 +17,24 @@ class MonthPage extends IndexPage {
         <Breadcrumb.Item active>{moment(extraContext.date).format('MMMM')}</Breadcrumb.Item>
       </Breadcrumb>
     );
+  }
+
+  jumbotron() {
+    const { data, pathContext } = this.props;
+    const { extraContext } = pathContext;
+
+    return (
+      <Jumbotron style={{
+        height: '400px',
+        backgroundColor: '#555',
+        color: 'white'
+      }}>
+        <Col md={8} mdOffset={2} lg={6} lgOffset={3}>
+          <h1>Posts from {moment(extraContext.date).format('MMMM')} {moment(extraContext.date).format('YYYY')}</h1>
+        </Col>
+        <Clearfix />
+      </Jumbotron>
+    )
   }
 }
 

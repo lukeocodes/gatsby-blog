@@ -102,11 +102,13 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
         reject(result.errors);
       }
 
+      // Create main paginated index of posts.
       createPaginatedPages({
         edges: result.data.allContentfulPost.edges,
         component: path.resolve(`./src/templates/index.js`)
       });
 
+      // Get the unique years for posts.
       const years = result.data.allContentfulPost.edges
         .map(edge => {
           const postDate = edge.node.date
@@ -117,7 +119,9 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
         })
         .filter((elem, pos, arr) => arr.indexOf(elem) == pos);
 
+
       years.forEach(year => {
+        // Get the posts that occur in this year.
         const yearEdges = result.data.allContentfulPost.edges.filter(
           (edge, pos, arr) => {
             const postDate = edge.node.date
@@ -128,6 +132,7 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
           }
         );
 
+          // Create paginated index for each year of posts.
         createPaginatedPages({
           edges: yearEdges,
           component: path.resolve(`./src/templates/year.js`),
@@ -137,6 +142,7 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
           }
         });
 
+        // Get the unique months in the current year.
         const months = yearEdges
           .map(edge => {
             const postDate = edge.node.date
@@ -148,6 +154,7 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
           .filter((elem, pos, arr) => arr.indexOf(elem) == pos);
 
         months.forEach(month => {
+          // Get the posts that occur in this year/month.
           const monthEdges = yearEdges.filter(
             (edge, pos, arr) => {
               const postDate = edge.node.date
@@ -158,6 +165,7 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
             }
           );
 
+          // Create paginated index for each year/month of posts.
           createPaginatedPages({
             edges: monthEdges,
             component: path.resolve(`./src/templates/month.js`),
@@ -169,6 +177,48 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
         });
       });
 
+      // Get all categories from all posts.
+      const allCategories = [];
+      result.data.allContentfulPost.edges.forEach(edge => {
+        if (edge.node.category) {
+          edge.node.category.forEach(category => {
+            allCategories.push(category.title);
+          });
+        }
+      });
+
+      // Filter all categories down to only unique ones.
+      allCategories
+        .filter((elem, pos, arr) => arr.indexOf(elem) == pos)
+        .forEach(categoryTitle => {
+          const categoryEdges = result.data.allContentfulPost.edges.filter(
+            (edge, pos, arr) => {
+              let edgeCategory = false;
+
+              if (edge.node.category) {
+                edge.node.category.forEach(category => {
+                  if (category.title === categoryTitle) {
+                    edgeCategory = true;
+                  }
+                });
+              }
+
+              return edgeCategory;
+            }
+          );
+
+          // Create paginated pages for posts per category.
+          createPaginatedPages({
+            edges: categoryEdges,
+            component: path.resolve(`./src/templates/category.js`),
+            pathPrefix: `category/${categoryTitle}`,
+            context: {
+              category: categoryTitle
+            }
+          });
+        });
+
+      // Dynamically create pages for each post from contentful.
       result.data.allContentfulPost.edges.forEach(edge => {
         const postDate = edge.node.date
           ? moment(edge.node.date)

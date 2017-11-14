@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import IndexPage from '../templates/index.js';
 import { Col, Clearfix, Jumbotron, Breadcrumb } from 'react-bootstrap';
-import moment from 'moment';
 
-class YearPage extends IndexPage {
+class CategoryPage extends IndexPage {
   breadcrumbs() {
     const { data, pathContext } = this.props;
     const { extraContext } = pathContext;
@@ -13,7 +12,7 @@ class YearPage extends IndexPage {
         <Breadcrumb.Item href={'/'}>
           Blog
         </Breadcrumb.Item>
-        <Breadcrumb.Item active>{moment(extraContext.date).format('YYYY')}</Breadcrumb.Item>
+        <Breadcrumb.Item active>{extraContext.category}</Breadcrumb.Item>
       </Breadcrumb>
     );
   }
@@ -29,7 +28,7 @@ class YearPage extends IndexPage {
         color: 'white'
       }}>
         <Col md={8} mdOffset={2} lg={6} lgOffset={3}>
-          <h1>Posts from {moment(extraContext.date).format('YYYY')}</h1>
+          <h1>{extraContext.category}</h1>
         </Col>
         <Clearfix />
       </Jumbotron>
@@ -37,4 +36,4 @@ class YearPage extends IndexPage {
   }
 }
 
-export default YearPage;
+export default CategoryPage;

@@ -19,10 +19,19 @@ const propTypes = {
 const PostTemplate = props => {
   const post = props.data.contentfulPost;
   const postDate = post.date ? moment(post.date) : moment(post.createdAt);
+  const fileUrl = post.featuredImage ? post.featuredImage.file.url : '' 
 
   return (
     <main>
-      <Jumbotron>
+      <Jumbotron style={{
+        height: '400px',
+        backgroundColor: '#555',
+        backgroundImage: `url(${fileUrl})`,
+        backgroundRepeat  : 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundSize: '100%',
+        color: 'white'
+      }}>
         <Col md={8} mdOffset={2} lg={6} lgOffset={3}>
           <h1>{post.title.title}</h1>
         </Col>
